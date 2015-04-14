@@ -7,7 +7,7 @@ public class Main {
 	
 	public void gameLoop() {
 		while(true) {
-			
+			//this is a comment
 		}
 	}
 }

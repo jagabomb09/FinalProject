@@ -1,26 +1,55 @@
 import java.awt.BorderLayout;
+import java.awt.Canvas;
+import java.awt.FlowLayout;
+import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 
 import javax.swing.*;
 
+//this class controls what is displayed in the window
 public class Window extends JFrame{
 	
-	JPanel charCreation = new JPanel();
-	JPanel game = new JPanel();
+	JPanel gameScreen = new JPanel();
+	
+	BufferedImage screen = new BufferedImage(400, 400, BufferedImage.TYPE_INT_RGB);
+	GameCanvas gameCanvas = new GameCanvas();
 	
 	public Window() {
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setLayout(new BorderLayout());
-		this.setSize(600,200);
+		this.setSize(500,500);
 	}
 	
 	void setCharCreationScreen() {
-		this.getContentPane().removeAll();
-		this.add(charCreation);
+		gameScreen.removeAll();
+		
+		//add elements to charCreation JPanel
+		
+		this.add(gameScreen);
 	}
 	
 	void setGameScreen() {
-		this.getContentPane().removeAll();
-		this.add(game);
+		gameScreen.removeAll();
+		gameScreen.setLayout(new BorderLayout());
+		
+		gameScreen.add(gameCanvas);
+		
+		this.add(gameScreen);
+	}
+	
+	void setScreen(BufferedImage image) {
+		screen = image;
+		gameScreen.repaint();
+	}
+	
+	class GameCanvas extends Canvas {
+		
+		@Override
+		public void paint(Graphics g) {
+			super.paint(g);
+			
+			g.drawImage(screen, 0, 0, this);
+		}
 	}
 }

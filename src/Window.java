@@ -1,20 +1,26 @@
-import java.awt.*;
-import javax.swing.*;
+import java.awt.BorderLayout;
+import java.awt.event.ActionListener;
 
+import javax.swing.*;
 
 public class Window extends JFrame{
 	
-	private JButton testButton = new JButton("Hello World");
+	JPanel charCreation = new JPanel();
+	JPanel game = new JPanel();
 	
-	Window() {
-		JPanel testPanel = new JPanel();
-		
+	public Window() {
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setLayout(new BorderLayout());
 		this.setSize(600,200);
-		
-		testPanel.add(testButton);
-		
-		this.add(testPanel);
+	}
+	
+	void setCharCreationScreen() {
+		this.getContentPane().removeAll();
+		this.add(charCreation);
+	}
+	
+	void setGameScreen() {
+		this.getContentPane().removeAll();
+		this.add(game);
 	}
 }

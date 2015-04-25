@@ -1,20 +1,16 @@
-import java.awt.BorderLayout;
-import java.awt.Canvas;
-import java.awt.FlowLayout;
-import java.awt.Graphics;
-import java.awt.Image;
-import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
 
+import java.awt.*;
 import javax.swing.*;
 
 //this class controls what is displayed in the window
-public class Window extends JFrame{
+public class Window extends JFrame {
 	
 	JPanel gameScreen = new JPanel();
-	
-	BufferedImage screen = new BufferedImage(400, 400, BufferedImage.TYPE_INT_RGB);
 	GameCanvas gameCanvas = new GameCanvas();
+	Player player = new Player(10, 10, 10, 10);
+	Map map = new Map();
+	
+	boolean drawMap = true, drawMainMenu, drawCharSheet;
 	
 	public Window() {
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -38,9 +34,8 @@ public class Window extends JFrame{
 		this.add(gameScreen);
 	}
 	
-	void setScreen(BufferedImage image) {
-		screen = image;
-		gameScreen.repaint();
+	void updateScreen() {
+		gameCanvas.repaint();
 	}
 	
 	class GameCanvas extends Canvas {
@@ -49,7 +44,27 @@ public class Window extends JFrame{
 		public void paint(Graphics g) {
 			super.paint(g);
 			
-			g.drawImage(screen, 0, 0, this);
+			if (drawMap) {
+				drawMap(g);
+				
+				g.setColor(Color.red);
+				g.fillRect(player.x, player.y, 10, 10);
+			}
+		}
+		
+		void drawMap(Graphics g) {
+			for (int y = 0; y < map.mapData.length; y ++) {
+				for (int x = 0; x < map.mapData.length; x ++) {
+					
+					g.setColor(Color.black);
+					if (map.mapData[y][x] == 1)
+						g.fillRect(x*10, y*10, 10, 10);
+					
+					g.setColor(Color.gray);
+					if (map.mapData[y][x] == 0)
+						g.fillRect(x*10, y*10, 10, 10);
+				}
+			}
 		}
 	}
 }

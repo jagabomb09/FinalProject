@@ -1,4 +1,4 @@
-
+//user controlled player class
 public class Player {
 	
 	int fort, might, intellect, will, armour, health, y, x;
@@ -12,5 +12,10 @@ public class Player {
 		
 		y = 10;
 		x = 10;
+	}
+	
+	void takeDamage(int physical, int magical) {
+		health -= physical - armour;
+		health -= magical - will;
 	}
 }

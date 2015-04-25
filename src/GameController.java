@@ -1,35 +1,38 @@
-import java.awt.Color;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.image.BufferedImage;
+import java.awt.event.*;
 
-//this class controls the main and window class
+//this class controls game logic
 public class GameController {
 	
-	Main main;
-	Window window;
-	
+	Window window = new Window();
 	InputListener inputListener = new InputListener();
-	BufferedImage gameScreen = new BufferedImage(400, 400, BufferedImage.TYPE_INT_ARGB);
 	
-	public GameController(Main main, Window window) {
-		this.main = main;
-		this.window = window;
-		
+	public GameController() {
 		window.addKeyListener(inputListener);
 		window.setGameScreen();
+		
+		window.setVisible(true);
 		
 		gameLoop();
 	}
 	
 	void gameLoop() {
-		main.setUpGame();
-		
 		while(true) {
-			window.setScreen(gameScreen);
+			
 		}
+	}
+	
+	void movePlayer(int yDir, int xDir) {
+		try {
+			if (window.map.mapData[(window.player.y + yDir) / 10][(window.player.x + xDir) / 10] == 0) {
+				window.player.y += yDir;
+				window.player.x += xDir;
+			}
+		} catch (ArrayIndexOutOfBoundsException ob) {
+			//when player tries to move outside the map
+		}
+		
+		
+		System.out.printf(":%d%n", window.player.x);
 	}
 	
 	class InputListener implements KeyListener {
@@ -50,17 +53,16 @@ public class GameController {
 		public void keyTyped(KeyEvent e) {
 			
 			switch(e.getKeyChar()) {
-			case 'w': main.movePlayer(-10, 0);
+			case 'w': movePlayer(-10, 0);
 				break;
-			case 'a': main.movePlayer(0, -10);
+			case 'a': movePlayer(0, -10);
 				break;
-			case 's': main.movePlayer(10, 0);
+			case 's': movePlayer(10, 0);
 				break;
-			case 'd': main.movePlayer(0, 10);
+			case 'd': movePlayer(0, 10);
 			}
 			
-			gameScreen.getGraphics().fillRect(main.getPlayerX(), main.getPlayerY(), 10, 10);
-			
+			window.updateScreen();
 		}
 		
 	}

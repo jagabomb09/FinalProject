@@ -32,7 +32,7 @@ public class GameController {
 		}
 		
 		
-		System.out.printf(":%d%n", window.player.x);
+		//System.out.printf(":%d%n", window.player.x);
 	}
 	
 	class InputListener implements KeyListener {

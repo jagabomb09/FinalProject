@@ -5,13 +5,14 @@ public class Player {
 	
 	
 	public Player(int fort, int might, int intellect, int will) {
+		this.fort = fort;
 		this.might = might;
 		this.intellect = intellect;
 		this.will = will;
 		health = fort*10;
 		
-		y = 10;
-		x = 10;
+		x = 210;
+		y = 210;
 	}
 	
 	void takeDamage(int physical, int magical) {

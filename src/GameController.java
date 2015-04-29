@@ -11,6 +11,7 @@ public class GameController {
 		window.setGameScreen();
 		
 		window.setVisible(true);
+		window.setResizable(false);
 		
 		gameLoop();
 	}
@@ -23,7 +24,7 @@ public class GameController {
 	
 	void movePlayer(int yDir, int xDir) {
 		try {
-			if (window.map.mapData[(window.player.y + yDir) / 10][(window.player.x + xDir) / 10] == 0) {
+			if (window.map.mapData[(window.player.y + yDir) / 10][(window.player.x + xDir) / 10] != 1) {
 				window.player.y += yDir;
 				window.player.x += xDir;
 			}
@@ -32,7 +33,7 @@ public class GameController {
 		}
 		
 		
-		System.out.printf(":%d%n", window.player.x);
+		//System.out.printf(":%d%n", window.player.x);
 	}
 	
 	class InputListener implements KeyListener {

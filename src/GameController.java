@@ -5,8 +5,11 @@ public class GameController {
 	
 	Window window = new Window();
 	InputListener inputListener = new InputListener();
+	StartButtonListener buttonListener = new StartButtonListener();
 	
 	public GameController() {
+		
+		window.setTitleScreen();
 		window.addKeyListener(inputListener);
 		window.setGameScreen();
 		
@@ -17,9 +20,6 @@ public class GameController {
 	}
 	
 	void gameLoop() {
-		while(true) {
-			
-		}
 	}
 	
 	void movePlayer(int yDir, int xDir) {
@@ -63,7 +63,26 @@ public class GameController {
 			case 'd': movePlayer(0, 10);
 			}
 			
+			if (window.map.mapData[window.player.y / 10][window.player.x / 10] == 3) {
+				if (window.player.y > 300)
+					window.player.y = 300;
+				
+				if (window.player.x > 300)
+					window.player.x = 300;
+				
+				window.map.setNewMap(window.player.y / 10, window.player.x / 10);
+			}
+			
 			window.updateScreen();
+		}
+		
+	}
+	
+	class StartButtonListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			window.setGameScreen();
 		}
 		
 	}

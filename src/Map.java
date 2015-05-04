@@ -10,7 +10,7 @@ public class Map {
 	int[][] mapData = new int[40][40];
 	ArrayList<Mob> mobs = new ArrayList<Mob>();
 	
-	int yStart, xStart, xLoc, yLoc, count, roomSize, direction, roomType, roomWidth, roomLength;
+	int yStart, xStart, xLoc, yLoc, count, roomSize, direction, roomType, roomWidth, roomLength, depth = 0;
 	
 	Random rand = new Random();
 	
@@ -19,17 +19,28 @@ public class Map {
 	}
 	
 	void setNewMap(int yStart, int xStart) {
-		for (int y = 0; y < mapData.length; y ++) {
-			for (int x = 0; x < mapData.length; x ++) {
-				mapData[y][x] = 0;
-			}
-		}
+		depth += 1;
+		
+		clearMap();
 		
 		yLoc = yStart;
 		xLoc = xStart;
 		
 		smartMapCreation();
-		addMobs(4);
+		
+		while(testMap(.25) == false) {
+			clearMap();
+			
+			yLoc = yStart;
+			xLoc = xStart;
+			
+			smartMapCreation();
+		}
+		
+		addMobs(2 + (int) (depth * .6));
+		
+		if (depth > 2)
+			addItems(1 + rand.nextInt((int) (depth * .5)));
 		
 		mapData[yLoc][xLoc] = 3;
 
@@ -44,6 +55,31 @@ public class Map {
 		//mapData[yLoc][xLoc] = 0;
 	}
 	
+	void clearMap() {
+		for (int y = 0; y < mapData.length; y ++) {
+			for (int x = 0; x < mapData.length; x ++) {
+				mapData[y][x] = 0;
+			}
+		}
+	}
+	
+	boolean testMap(double percentage) {
+		int openSpace = 0;
+		
+		for (int y = 0; y < mapData.length; y ++) {
+			for (int x = 0; x < mapData.length; x ++) {
+				
+				if (mapData[y][x] == 2)
+					openSpace += 1;
+			}
+		}
+		
+		if (openSpace >= (mapData.length * mapData.length) * percentage)
+			return true;
+		
+		return false;
+	}
+	
 	void addMobs(int amount) {
 		int mobY, mobX;
 		
@@ -56,7 +92,23 @@ public class Map {
 				mobX = rand.nextInt(39);
 			}
 			
-			mobs.add(new Mob(mobY, mobX, 100, 1, 0, 1, 1));
+			mobs.add(new Mob(mobY, mobX, 100 + depth * 3, 1 + (int) (depth * .4), 0, 1, 1 + (int) (depth * .2)));
+		}
+	}
+	
+	void addItems(int amount) {
+		int itemY, itemX;
+		
+		for (int i = 0; i < amount; i ++) {
+			itemY = rand.nextInt(39);
+			itemX = rand.nextInt(39);
+			
+			while(mapData[itemY][itemX] != 2) {
+				itemY = rand.nextInt(39);
+				itemX = rand.nextInt(39);
+			}
+			
+			mapData[itemY][itemX] = 4;
 		}
 	}
 	
@@ -127,35 +179,35 @@ public class Map {
 				
 				fillArea(yLoc, xLoc, direction, roomWidth, roomLength, 2);
 			}
-		} catch (ArrayIndexOutOfBoundsException ob) {}
+		} catch (ArrayIndexOutOfBoundsException ob) {
+			//this is empty because the program should just continue if it any location is out of bounds
+		}
 		
 	}
 	
 	void fillArea(int y, int x, int direction, int width, int length, int type) {
 		for (int i = roomLength; i > 0; i --) {
-			try {
-				if (direction == 1 || direction == 3) {
-					int xOfset = x - roomWidth;
-					
-					while(xOfset < x + roomWidth) {
-						if (mapData[y][xOfset] != 1)
-							mapData[y][xOfset] = type;
-						
-						xOfset += 1;
-					}
-				}
+			if (direction == 1 || direction == 3) {
+				int xOfset = x - roomWidth;
 				
-				if (direction == 2 || direction == 4) {
-					int yOfset = y - roomWidth;
+				while(xOfset < x + roomWidth) {
+					if (mapData[y][xOfset] != 1)
+						mapData[y][xOfset] = type;
 					
-					while(yOfset < y + roomWidth) {
-						if (mapData[yOfset][x] != 1)
-							mapData[yOfset][x] = type;
-						
-						yOfset += 1;
-					}
+					xOfset += 1;
 				}
-			} catch (ArrayIndexOutOfBoundsException ob) {}
+			}
+			
+			if (direction == 2 || direction == 4) {
+				int yOfset = y - roomWidth;
+				
+				while(yOfset < y + roomWidth) {
+					if (mapData[yOfset][x] != 1)
+						mapData[yOfset][x] = type;
+					
+					yOfset += 1;
+				}
+			}
 			
 			mapData[y][x] = 2;
 			

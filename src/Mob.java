@@ -2,7 +2,7 @@ import java.util.Random;
 
 public class Mob {
 	Random rand = new Random();
-	int y, x, health, might, intellect, will, armour, fort;
+	int y, x, health, might, intellect, will, armour, fort, yDir, xDir;
 	
 	Mob (int y, int x, int health, int might, int intellect, int will, int armour) {
 		this.y = y;
@@ -14,16 +14,16 @@ public class Mob {
 		fort = health / 10;
 	}
 	
-	void takeDamage(int physical, int magical) {
-		health -= (physical - armour);
-		health -= (magical - will);
+	void takeDamage(int physical) {
+		if (physical - armour > 0)
+			health -= (physical - armour);
 	}
 	
 	void move(int[][] map,int playerY,int playerX) {
-		int yDir = rand.nextInt(3) - 1;
-		int xDir = rand.nextInt(3) - 1;
+		yDir = rand.nextInt(3) - 1;
+		xDir = rand.nextInt(3) - 1;
 		
-		if (Math.abs(playerY - y) < 5 && Math.abs(playerX - x) < 5) {
+		if (Math.abs(playerY - y) < 7 && Math.abs(playerX - x) < 7) {
 			if (playerY > y)
 				yDir = 1;
 			

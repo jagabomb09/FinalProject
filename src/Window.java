@@ -16,12 +16,11 @@ public class Window extends JFrame {
 	JButton start = new JButton("--Start--");
 
 	Map map = new Map();
-	Player player = new Player(15, 20, 9, 8);
+	Player player = new Player(10, 20, 9, 8);
 	
 	GameCanvas gameCanvas = new GameCanvas();
 	
 	ArrayList<String> gameInfo = new ArrayList<String>();
-	
 	
 	boolean drawMap = true, drawMainMenu, drawCharSheet;
 	
@@ -83,15 +82,11 @@ public class Window extends JFrame {
 		
 		void drawMobs(Graphics bufferGraphics) {
 			for (int i = 0; i < map.mobs.size(); i ++) {
-				bufferGraphics.setColor(Color.red);
+				bufferGraphics.setColor(Color.black);
 				bufferGraphics.fillRect(map.mobs.get(i).x * 10, map.mobs.get(i).y * 10, 10, 10);
 				
-				bufferGraphics.drawLine((map.mobs.get(i).x * 10), (map.mobs.get(i).y * 10) - 5, (map.mobs.get(i).x * 10) + 10, (map.mobs.get(i).y * 10) - 5);
-				
-				bufferGraphics.setColor(Color.green);
-				bufferGraphics.drawLine((map.mobs.get(i).x * 10), (map.mobs.get(i).y * 10) - 5, (map.mobs.get(i).x * 10) + (map.mobs.get(i).health / 10), (map.mobs.get(i).y * 10) - 5);
-				
-				
+				bufferGraphics.setColor(Color.red);
+				bufferGraphics.fillRect(map.mobs.get(i).x * 10, map.mobs.get(i).y * 10, 10, map.mobs.get(i).health / 10);
 			}
 		}
 		
@@ -102,15 +97,21 @@ public class Window extends JFrame {
 			bufferGraphics.fillRect(0, 400, 500, 100);
 			
 			bufferGraphics.setColor(Color.green);
-			bufferGraphics.fillRect(400, 10, (player.health / player.fort) * 10, 20);
+			bufferGraphics.fillRect(400, 10, player.health, 20);
 			bufferGraphics.setColor(Color.black);
 			bufferGraphics.drawRect(400, 10, 100, 20);
+			bufferGraphics.drawString(" " + player.health, 405, 25);
 			
 			bufferGraphics.setColor(Color.black);
 			bufferGraphics.drawString(player.getLevel(), 400, 50);
 			bufferGraphics.drawString(player.getXp(), 400, 70);
 			bufferGraphics.drawString(player.getMight(), 400, 90);
 			bufferGraphics.drawString(player.getArmour(), 400, 110);
+			
+			for (int i = 0; i < player.inventory.length; i ++) {
+				if (player.inventory[i] != null)
+					bufferGraphics.drawString((i + 1) + ": " + player.inventory[i].getName(), 400, 150 + (i * 20));
+			}
 			
 			bufferGraphics.drawRect(5, 405, 290, 60);
 			
@@ -132,8 +133,12 @@ public class Window extends JFrame {
 					if (map.mapData[y][x] == 2)
 						bufferGraphics.fillRect(x*10, y*10, 10, 10);
 					
-					bufferGraphics.setColor(Color.blue);
+					bufferGraphics.setColor(new Color(185, 122, 87));
 					if (map.mapData[y][x] == 3)
+						bufferGraphics.fillRect(x*10, y*10, 10, 10);
+					
+					bufferGraphics.setColor(Color.pink);
+					if (map.mapData[y][x] == 4)
 						bufferGraphics.fillRect(x*10, y*10, 10, 10);
 				}
 			}

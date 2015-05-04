@@ -1,4 +1,5 @@
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.Random;
 
 //map information
@@ -7,6 +8,8 @@ import java.util.Random;
 public class Map {
 	
 	int[][] mapData = new int[40][40];
+	ArrayList<Mob> mobs = new ArrayList<Mob>();
+	
 	int yStart, xStart, xLoc, yLoc, count, roomSize, direction, roomType, roomWidth, roomLength;
 	
 	Random rand = new Random();
@@ -26,6 +29,7 @@ public class Map {
 		xLoc = xStart;
 		
 		smartMapCreation();
+		addMobs(4);
 		
 		mapData[yLoc][xLoc] = 3;
 
@@ -38,6 +42,22 @@ public class Map {
 		}
 		
 		//mapData[yLoc][xLoc] = 0;
+	}
+	
+	void addMobs(int amount) {
+		int mobY, mobX;
+		
+		for (int i = 0; i < amount; i ++) {
+			mobY = rand.nextInt(39);
+			mobX = rand.nextInt(39);
+			
+			while(mapData[mobY][mobX] != 2) {
+				mobY = rand.nextInt(39);
+				mobX = rand.nextInt(39);
+			}
+			
+			mobs.add(new Mob(mobY, mobX, 100, 1, 0, 1, 1));
+		}
 	}
 	
 	void smartMapCreation() {
@@ -101,7 +121,7 @@ public class Map {
 					
 					tries += 1;
 					
-					if (tries == 50)
+					if (tries == 15)
 						return;
 				}
 				

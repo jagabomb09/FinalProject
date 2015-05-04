@@ -2,6 +2,7 @@
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.Image;
+import java.util.ArrayList;
 import java.util.Random;
 
 import javax.swing.*;
@@ -15,24 +16,24 @@ public class Window extends JFrame {
 	JButton start = new JButton("--Start--");
 
 	Map map = new Map();
-	Player player = new Player(10, 10, 10, 10);
-	Mob[] mobs = new Mob[10];
+	Player player = new Player(15, 20, 9, 8);
 	
 	GameCanvas gameCanvas = new GameCanvas();
+	
+	ArrayList<String> gameInfo = new ArrayList<String>();
+	
 	
 	boolean drawMap = true, drawMainMenu, drawCharSheet;
 	
 	public Window() {
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setSize(500,500);
-		
-		
 	}
 	
 	void setTitleScreen() {
 		gameScreen.removeAll();
 		gameScreen.setLayout(new BorderLayout());
-		
+
 		gameScreen.add(start);
 		
 		this.add(gameScreen);
@@ -51,6 +52,14 @@ public class Window extends JFrame {
 		gameCanvas.repaint();
 	}
 	
+	void addInfo(String message) {
+		gameInfo.add(0, message);
+		
+		if (gameInfo.size() > 5) {
+			gameInfo.remove(gameInfo.size() - 1);
+		}
+	}
+	
 	//inner canvas class
 	class GameCanvas extends Canvas {
 		
@@ -64,15 +73,26 @@ public class Window extends JFrame {
 			
 			drawMap(bufferGraphics);
 			drawUI(bufferGraphics);
+			drawMobs(bufferGraphics);
 			
 			bufferGraphics.setColor(Color.green);
-			bufferGraphics.fillRect(player.x, player.y, 10, 10);
+			bufferGraphics.fillRect(player.x * 10, player.y * 10, 10, 10);
 			
 			g.drawImage(screen, 0, 0, this);
 		}
 		
-		void drawMobs(Graphics g) {
-			
+		void drawMobs(Graphics bufferGraphics) {
+			for (int i = 0; i < map.mobs.size(); i ++) {
+				bufferGraphics.setColor(Color.red);
+				bufferGraphics.fillRect(map.mobs.get(i).x * 10, map.mobs.get(i).y * 10, 10, 10);
+				
+				bufferGraphics.drawLine((map.mobs.get(i).x * 10), (map.mobs.get(i).y * 10) - 5, (map.mobs.get(i).x * 10) + 10, (map.mobs.get(i).y * 10) - 5);
+				
+				bufferGraphics.setColor(Color.green);
+				bufferGraphics.drawLine((map.mobs.get(i).x * 10), (map.mobs.get(i).y * 10) - 5, (map.mobs.get(i).x * 10) + (map.mobs.get(i).health / 10), (map.mobs.get(i).y * 10) - 5);
+				
+				
+			}
 		}
 		
 		void drawUI(Graphics bufferGraphics) {
@@ -81,15 +101,22 @@ public class Window extends JFrame {
 			bufferGraphics.fillRect(400, 0, 100, 400);
 			bufferGraphics.fillRect(0, 400, 500, 100);
 			
-			bufferGraphics.setColor(Color.red);
-			bufferGraphics.fillRect(400, 10, (player.health / player.fort) * 100, 20);
+			bufferGraphics.setColor(Color.green);
+			bufferGraphics.fillRect(400, 10, (player.health / player.fort) * 10, 20);
 			bufferGraphics.setColor(Color.black);
 			bufferGraphics.drawRect(400, 10, 100, 20);
 			
 			bufferGraphics.setColor(Color.black);
 			bufferGraphics.drawString(player.getLevel(), 400, 50);
+			bufferGraphics.drawString(player.getXp(), 400, 70);
+			bufferGraphics.drawString(player.getMight(), 400, 90);
+			bufferGraphics.drawString(player.getArmour(), 400, 110);
 			
 			bufferGraphics.drawRect(5, 405, 290, 60);
+			
+			for (int i = 0; i < gameInfo.size(); i ++) {
+				bufferGraphics.drawString((String) gameInfo.get(i), 10, 420 + (i*10));
+			}
 		}
 		
 		void drawMap(Graphics bufferGraphics) {

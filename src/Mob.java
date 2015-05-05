@@ -19,7 +19,7 @@ public class Mob {
 			health -= (physical - armour);
 	}
 	
-	void move(int[][] map,int playerY,int playerX) {
+	void move(int[][] map,int playerY, int playerX) {
 		yDir = rand.nextInt(3) - 1;
 		xDir = rand.nextInt(3) - 1;
 		
@@ -38,10 +38,12 @@ public class Mob {
 		}
 		
 		try {
-			if (map[y + yDir][x + xDir] != 1 && y + yDir != playerY && x + xDir != playerX) {
+			if (map[y + yDir][x] != 1 && y + yDir != playerY)
 				y += yDir;
+			
+			if (map[y][x + xDir] != 1 && x + xDir != playerX)
 				x += xDir;
-			}
+			
 		} catch (ArrayIndexOutOfBoundsException ob) {
 			//when player tries to move outside the map
 		}

@@ -13,7 +13,6 @@ public class Window extends JFrame {
 	Random rand = new Random();
 	
 	JPanel gameScreen = new JPanel();
-	JButton start = new JButton("--Start--");
 
 	Map map = new Map();
 	Player player = new Player(10, 20, 9, 8);
@@ -22,25 +21,21 @@ public class Window extends JFrame {
 	
 	ArrayList<String> gameInfo = new ArrayList<String>();
 	
-	boolean drawMap = true, drawMainMenu, drawCharSheet;
+	boolean drawGame = true, drawKillScreen = false;
 	
 	public Window() {
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setSize(500,500);
+		
+		gameScreen.setLayout(new BorderLayout());
 	}
 	
-	void setTitleScreen() {
-		gameScreen.removeAll();
-		gameScreen.setLayout(new BorderLayout());
-
-		gameScreen.add(start);
-		
-		this.add(gameScreen);
+	void killPlayer() {
+		drawKillScreen = true;
 	}
 	
 	void setGameScreen() {
 		gameScreen.removeAll();
-		gameScreen.setLayout(new BorderLayout());
 		
 		gameScreen.add(gameCanvas);
 		
@@ -70,12 +65,22 @@ public class Window extends JFrame {
 			
 			Graphics bufferGraphics = screen.getGraphics();
 			
-			drawMap(bufferGraphics);
-			drawUI(bufferGraphics);
-			drawMobs(bufferGraphics);
+			if (drawGame) {
+				drawMap(bufferGraphics);
+				drawUI(bufferGraphics);
+				drawMobs(bufferGraphics);
+				
+				bufferGraphics.setColor(Color.green);
+				bufferGraphics.fillRect(player.x * 10, player.y * 10, 10, 10);
+			}
 			
-			bufferGraphics.setColor(Color.green);
-			bufferGraphics.fillRect(player.x * 10, player.y * 10, 10, 10);
+			if (drawKillScreen) {
+				bufferGraphics.setColor(Color.white);
+				bufferGraphics.fillRect(0, 0, 500, 500);
+				
+				bufferGraphics.setColor(Color.black);
+				bufferGraphics.drawString("You have died", 230, 230);
+			}
 			
 			g.drawImage(screen, 0, 0, this);
 		}
@@ -106,7 +111,7 @@ public class Window extends JFrame {
 			bufferGraphics.drawString(player.getLevel(), 400, 50);
 			bufferGraphics.drawString(player.getXp(), 400, 70);
 			bufferGraphics.drawString(player.getMight(), 400, 90);
-			bufferGraphics.drawString(player.getArmour(), 400, 110);
+			bufferGraphics.drawString(player.getArmor(), 400, 110);
 			
 			for (int i = 0; i < player.inventory.length; i ++) {
 				if (player.inventory[i] != null)

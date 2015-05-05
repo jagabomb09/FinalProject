@@ -1,9 +1,8 @@
 //user controlled player class
 public class Player {
 	
-	int fort, might, intellect, will, armour, health, y, x, level, xp, nextLevelXP;
+	int fort, might, intellect, will, armor, health, y, x, level, xp, nextLevelXP;
 	Item[] inventory = new Item[9];
-	Item test = new MightPot();
 	
 	public Player(int fort, int might, int intellect, int will) {
 		this.fort = fort;
@@ -18,9 +17,7 @@ public class Player {
 		xp = 0;
 		
 		nextLevelXP = level * 12;
-		for (int i = 0; i < inventory.length; i ++) {
-			inventory[i] = test;
-		}
+		inventory[0] = new HealthPot();
 		
 	}
 	
@@ -28,7 +25,7 @@ public class Player {
 		xp = 0;
 		level += 1;
 		might += 2;
-		armour += 2;
+		armor += 2;
 		
 		nextLevelXP = level * 12;
 	}
@@ -67,12 +64,11 @@ public class Player {
 		return ("Might: " + might);
 	}
 	
-	String getArmour() {
-		return ("Armour: " + armour);
+	String getArmor() {
+		return ("Armor: " + armor);
 	}
 	
 	void takeDamage(int physical) {
-		if (physical - armour > 0)
-			health -= physical - armour;
+		health -= physical;
 	}
 }

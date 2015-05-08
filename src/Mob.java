@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Random;
 
 public class Mob {
@@ -19,11 +20,11 @@ public class Mob {
 			health -= (physical - armour);
 	}
 	
-	void move(int[][] map,int playerY, int playerX) {
+	void move(int[][] map, int playerY, int playerX, int playerStealth, ArrayList<Mob> mobs) {
 		yDir = rand.nextInt(3) - 1;
 		xDir = rand.nextInt(3) - 1;
 		
-		if (Math.abs(playerY - y) < 7 && Math.abs(playerX - x) < 7) {
+		if (Math.abs(playerY - y) < playerStealth && Math.abs(playerX - x) < playerStealth) {
 			if (playerY > y)
 				yDir = 1;
 			
@@ -37,12 +38,34 @@ public class Mob {
 				xDir = -1;
 		}
 		
+		
+		
 		try {
-			if (map[y + yDir][x] != 1 && y + yDir != playerY)
-				y += yDir;
+			if (map[y + yDir][x] != 1 && y + yDir != playerY) {
+				boolean open = true;
+				
+				for (int i = 0; i < mobs.size(); i ++) {
+					if (mobs.get(i).y == (y + yDir))
+						open = false;
+				}
+				
+				if (open)
+					y += yDir;
+			}
+				
 			
-			if (map[y][x + xDir] != 1 && x + xDir != playerX)
-				x += xDir;
+			if (map[y][x + xDir] != 1 && x + xDir != playerX) {
+				boolean open = true;
+				
+				for (int i = 0; i < mobs.size(); i ++) {
+					if (mobs.get(i).x == (x + xDir))
+						open = false;
+				}
+				
+				if (open)
+					x += xDir;
+			}
+				
 			
 		} catch (ArrayIndexOutOfBoundsException ob) {
 			//when player tries to move outside the map

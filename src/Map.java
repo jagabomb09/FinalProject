@@ -39,8 +39,7 @@ public class Map {
 		
 		addMobs(2 + (int) (depth * .6));  //add mobs to map
 		
-		if (depth > 2)
-			addItems(rand.nextInt((int) (depth * .5)));  //add items to map
+		addItems((int) (depth * .5));  //add items to map
 		
 		mapData[yLoc][xLoc] = 3;  //add door at finishing location
 
@@ -92,7 +91,7 @@ public class Map {
 				mobX = rand.nextInt(39);
 			}
 			
-			mobs.add(new Mob(mobY, mobX, 100, 1 + (int) (depth * .11), 0, 1, 1 + (int) (depth * .7)));
+			mobs.add(new Mob(mobY, mobX, 100, 1 + (int) (depth * .5), 0, 1, 1 + (int) (depth * .9)));
 		}
 	}
 	
@@ -138,7 +137,7 @@ public class Map {
 			}
 		}
 		
-		try {  //this is to avoid ArrayOutOfBounds errors being thrown
+		try {  //this is to catch ArrayOutOfBounds errors being thrown
 			while(true) {
 				direction = rand.nextInt(4) + 1; //pick a random direction
 				roomType = rand.nextInt(5);  //pick a random room type
@@ -156,7 +155,6 @@ public class Map {
 				int tries = 0;  //set counter tries to 0
 				while(scanArea(yLoc, xLoc, direction, 0, roomLength) == false) {  //keep scanning the area of the next room until you find a open area
 					direction = rand.nextInt(4) + 1;  //pick a random direction
-					
 					roomType = rand.nextInt(5);  //pick a random room type
 					
 					if (roomType < 4) {  //this will create a box shaped room with random width and length
@@ -219,7 +217,7 @@ public class Map {
 				}
 			}
 			
-			mapData[y][x] = type;  //set current position to (type)
+			mapData[y][x] = type;
 			
 			switch (direction) { //move using direction
 			case 1: y -= 1;

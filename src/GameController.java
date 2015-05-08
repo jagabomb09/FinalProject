@@ -9,6 +9,7 @@ public class GameController {
 	InputListener inputListener = new InputListener();
 	
 	Random rand = new Random();
+	int stealthTimer = 0;
 	
 	boolean gameRunning = true;
 	
@@ -25,11 +26,13 @@ public class GameController {
 			window.addInfo("using " + window.player.inventory[index].getName());
 			
 			switch (window.player.inventory[index].getName()) {
-			case "Health Potion": window.player.health += 25;
+			case "Health Potion": 
+				window.player.health += 25;
 				if (window.player.health > (window.player.fort * 10))
 					window.player.health = (window.player.fort * 10);
 				break;
-			case "Might Potion": window.player.might += 2;
+			case "Might Potion": 
+				window.player.might += 2;
 				break;
 			case "Teleport Scroll":
 				int x = rand.nextInt(30) + 5;
@@ -39,9 +42,14 @@ public class GameController {
 					x = rand.nextInt(30) + 5;
 					y = rand.nextInt(30) + 5;
 				}
-			
+				
 				window.player.y = y;
 				window.player.x = x;
+				break;
+			case "StealthScroll":
+				stealthTimer = 15;
+				window.player.stealth = 2;
+				break;
 			}
 			
 			window.player.inventory[index] = null;
@@ -55,6 +63,12 @@ public class GameController {
 			if (window.map.mapData[window.player.y + yDir][window.player.x + xDir] != 1) {  //if location player is trying to move to is not a wall
 				window.player.y += yDir;  //move to location
 				window.player.x += xDir;
+				
+				if (stealthTimer > 0)
+					stealthTimer -= 1;
+				
+				if (stealthTimer == 0 && window.player.stealth < 7)
+					window.player.stealth += 1;
 				
 				for (int i = 0; i < window.map.mobs.size(); i ++) {  //loops through all mobs in the ArrayList
 					if (window.player.y == window.map.mobs.get(i).y && window.player.x == window.map.mobs.get(i).x) {  //if player is in same location as mob
@@ -82,7 +96,7 @@ public class GameController {
 				
 				if (window.map.mapData[window.player.y][window.player.x] == 4) {  //if player moved to a item
 					window.map.mapData[window.player.y][window.player.x] = 2;  //remove item from map
-					int itemType = rand.nextInt(3);  //pick random itemType
+					int itemType = rand.nextInt(4);  //pick random itemType
 					
 					switch(itemType) {  //add item to player inventory
 					case 0: window.player.addToInventory(new HealthPot());
@@ -90,6 +104,9 @@ public class GameController {
 					case 1: window.player.addToInventory(new MightPot());
 					break;
 					case 2: window.player.addToInventory(new TeleportScroll());
+					break;
+					case 3: window.player.addToInventory(new StealthScroll());
+					break;
 					}
 				}
 			}
@@ -158,6 +175,7 @@ public class GameController {
 					window.player.x = 2;
 				
 				window.map.mobs.clear();
+				window.player.clearSightMap();
 				window.map.setNewMap(window.player.y, window.player.x);
 				window.addInfo("You proceed down the stairs to level " + window.map.depth);
 				
@@ -181,7 +199,7 @@ public class GameController {
 					
 					window.addInfo("recieved " + damage + " physical damage : roll (" + (roll + 3) + ")");
 				} else {
-					window.map.mobs.get(i).move(window.map.mapData, window.player.y, window.player.x);
+					window.map.mobs.get(i).move(window.map.mapData, window.player.y, window.player.x, window.player.stealth, window.map.mobs);
 				}
 			}
 			

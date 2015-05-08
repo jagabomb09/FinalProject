@@ -1,10 +1,13 @@
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.awt.Image;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
+import javax.imageio.IIOException;
+import javax.imageio.ImageIO;
 import javax.swing.*;
 
 //this class controls what is displayed in the window
@@ -38,7 +41,6 @@ public class Window extends JFrame {
 		gameScreen.removeAll();
 		
 		gameScreen.add(gameCanvas);
-		
 		this.add(gameScreen);
 	}
 	
@@ -58,12 +60,14 @@ public class Window extends JFrame {
 	class GameCanvas extends Canvas {
 		
 		BufferedImage screen = new BufferedImage(500, 500, BufferedImage.TYPE_INT_RGB);
+		BufferedImage playerImage = new BufferedImage(10, 10, BufferedImage.TYPE_INT_RGB);
 		
 		@Override
 		public void paint(Graphics g) {
 			super.paint(g);
 			
 			Graphics bufferGraphics = screen.getGraphics();
+			player.updateSightMap();
 			
 			if (drawGame) {
 				drawMap(bufferGraphics);
@@ -87,11 +91,14 @@ public class Window extends JFrame {
 		
 		void drawMobs(Graphics bufferGraphics) {
 			for (int i = 0; i < map.mobs.size(); i ++) {
-				bufferGraphics.setColor(Color.black);
-				bufferGraphics.fillRect(map.mobs.get(i).x * 10, map.mobs.get(i).y * 10, 10, 10);
+				if (player.sightMap[map.mobs.get(i).y][map.mobs.get(i).x] == 1) {
+					bufferGraphics.setColor(Color.black);
+					bufferGraphics.fillRect(map.mobs.get(i).x * 10, map.mobs.get(i).y * 10, 10, 10);
+					
+					bufferGraphics.setColor(Color.red);
+					bufferGraphics.fillRect(map.mobs.get(i).x * 10, map.mobs.get(i).y * 10, 10, map.mobs.get(i).health / 10);
+				}
 				
-				bufferGraphics.setColor(Color.red);
-				bufferGraphics.fillRect(map.mobs.get(i).x * 10, map.mobs.get(i).y * 10, 10, map.mobs.get(i).health / 10);
 			}
 		}
 		
@@ -112,6 +119,7 @@ public class Window extends JFrame {
 			bufferGraphics.drawString(player.getXp(), 400, 70);
 			bufferGraphics.drawString(player.getMight(), 400, 90);
 			bufferGraphics.drawString(player.getArmor(), 400, 110);
+			bufferGraphics.drawString(player.getStealth(), 400, 130);
 			
 			for (int i = 0; i < player.inventory.length; i ++) {
 				if (player.inventory[i] != null)
@@ -130,21 +138,27 @@ public class Window extends JFrame {
 			for (int y = 0; y < map.mapData.length; y ++) {
 				for (int x = 0; x < map.mapData.length; x ++) {
 					
-					bufferGraphics.setColor(Color.black);
-					if (map.mapData[y][x] == 1)
+					if (player.sightMap[y][x] == 1) {
+						bufferGraphics.setColor(Color.black);
+						if (map.mapData[y][x] == 1)
+							bufferGraphics.fillRect(x*10, y*10, 10, 10);
+						
+						bufferGraphics.setColor(new Color(138, 133, 113));
+						if (map.mapData[y][x] == 2)
+							bufferGraphics.fillRect(x*10, y*10, 10, 10);
+						
+						bufferGraphics.setColor(new Color(123, 95, 55));
+						if (map.mapData[y][x] == 3)
+							bufferGraphics.fillRect(x*10, y*10, 10, 10);
+						
+						bufferGraphics.setColor(Color.pink);
+						if (map.mapData[y][x] == 4)
+							bufferGraphics.fillRect(x*10, y*10, 10, 10);
+					} else {
+						bufferGraphics.setColor(new Color(15, 15, 15));
 						bufferGraphics.fillRect(x*10, y*10, 10, 10);
+					}
 					
-					bufferGraphics.setColor(Color.white);
-					if (map.mapData[y][x] == 2)
-						bufferGraphics.fillRect(x*10, y*10, 10, 10);
-					
-					bufferGraphics.setColor(new Color(185, 122, 87));
-					if (map.mapData[y][x] == 3)
-						bufferGraphics.fillRect(x*10, y*10, 10, 10);
-					
-					bufferGraphics.setColor(Color.pink);
-					if (map.mapData[y][x] == 4)
-						bufferGraphics.fillRect(x*10, y*10, 10, 10);
 				}
 			}
 		}
